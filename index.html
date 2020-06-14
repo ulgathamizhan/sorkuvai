@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>சொற்றேடல்</title>
+    <style>
+      .search_c {
+        width: 100%;
+        font-size: 1.8em;
+        font-family: monospace;
+      }
+      .search_b {
+        margin: 1em;
+        padding: 1em;
+        background-color: ghostwhite;
+        width: 20%;
+        font-size: 1em;
+      }
+      span {
+        color: #4040ff;
+        font-size: 1.2em;
+      }
+    </style>
+</head>
+<body>
+    <script type="text/javascript">
+      function sorkuvai(query) {
+        if (query.length == 0)
+          return;
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+              response = xhttp.responseText;
+              response = response.substring(response.indexOf("list2")+8)
+              response = response.replace(/[>]([ ;,.a-zA-Z0-9]+)[<]/g,'><span>$1</span><')
+              panel = document.getElementsByClassName('panel')[0]
+              panel.innerHTML += '<hr>' + response
+            }
+        };
+        xhttp.open("GET", "https://sorkuvai.com:9001/sorkuvai?q="+query, true);
+        xhttp.send();
+      }
+      function search() {
+        query = document.getElementsByClassName('search_c')[0].value
+        panel = document.getElementsByClassName('panel')[0]
+        panel.innerHTML = ""
+        words = query.split(',')
+        if(words.length == 0)
+          return;
+        //sorkuvai(words.pop().trim())
+        i = 0
+        search_sorkuvai = func => {
+          if(i < words.length) {
+            console.log(words[i])
+            sorkuvai(words[i].trim())
+            i = i + 1
+            setTimeout(() => func(func), 5000)
+          } else {
+            panel = document.getElementsByClassName('panel')[0]
+            panel.innerHTML += "<br><hr><br><hr>"
+          }
+        }
+        search_sorkuvai(search_sorkuvai)
+      }
+    </script>
+    <input class='search_c'/>
+    <button class='search_b' onclick="search()">தேடு</button>
+    <div class = 'panel'>
+      
+    </div>
+</body>
+</html>
