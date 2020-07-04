@@ -34,6 +34,15 @@
         color: #4040ff;
         font-size: 1.2em;
       }
+      .clipboard {
+        position: fixed;
+        top: 150%;
+      }
+      .selection {
+        background-color: #ffff3e;
+        border-radius: 2em;
+        padding: 0.2em;
+      }
     </style>
 </head>
 <body>
@@ -51,7 +60,7 @@
               if (this.readyState == 4 && this.status == 200) {
                 response = xhttp.responseText;
                 response = response.substring(response.indexOf("list2")+8)
-                response = response.replace(/[>]([ ;,.a-zA-Z0-9]+)[<]/g,'><span>$1</span><')
+                response = response.replace(/[>]([  -_/\\)(;,.a-zA-Z0-9]+)[<]/g,'><span>$1</span><')
                 panel = document.getElementsByClassName('panel')[0]
                 panel.innerHTML += '<hr>' + response
                 dict[query] = response
@@ -76,7 +85,7 @@
         i = 0
         search_sorkuvai = func => {
           if(i < words.length) {
-            console.log(words[i])
+            // console.log(words[i])
             sorkuvai(words[i])
             i = i + 1
             setTimeout(() => func(func), 5000)
@@ -90,18 +99,34 @@
       function அழி() {
         panel = document.getElementsByClassName('panel')[0]
         panel.innerHTML = ""
+        input = document.getElementsByClassName('search_c')[0]
+        input.value = ""
+        input.focus()
       }
       function மேல்() {
         document.activeElement.blur();
         window.scrollTo(0,0);
       }
+      document.addEventListener('click', event => {
+        if(event.target.tagName == 'B') {
+          word = event.target.textContent.trim()
+          if(word.length == 0) return;
+          event.target.classList.add('selection')
+          clipboard = document.getElementsByClassName('clipboard')[0]
+          clipboard.innerHTML = word
+          clipboard.select()
+          document.execCommand('copy')
+          setTimeout(()=>event.target.classList.remove('selection'), 500)
+        }
+      });
     </script>
-    <input class='search_c'/>
+    <input class='search_c' />
     <button class='search_b' onclick="search()">தேடு</button>
     <button class='search_b' onclick="அழி()">அழி</button>
     <div class = 'panel'>
       
     </div>
     <button class='search_up' onclick="மேல்()">மேல்</button>
+    <textarea class="clipboard"></textarea>
 </body>
 </html>
