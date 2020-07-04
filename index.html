@@ -36,7 +36,12 @@
       }
       .clipboard {
         position: fixed;
-        top: 150%;
+        top: 40%;
+        width: 0px;
+        height: 0px;
+        margin: 0px;
+        padding: 0px;
+        border: 0px;
       }
       .selection {
         background-color: #ffff3e;
@@ -114,8 +119,10 @@
           event.target.classList.add('selection')
           clipboard = document.getElementsByClassName('clipboard')[0]
           clipboard.innerHTML = word
+          clipboard.blur()
           clipboard.select()
           document.execCommand('copy')
+          clipboard.blur()
           setTimeout(()=>event.target.classList.remove('selection'), 500)
         }
       });
